@@ -1,0 +1,4 @@
+# Pinned for reproducibility: the submission must regenerate bit-identically.
+# Tested on CPython 3.12 (3.10+ should work; no version-pinned C extensions).
+numpy==2.5.4
+pandas==3.1.1

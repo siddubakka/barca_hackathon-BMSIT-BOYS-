@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# No CSV may ever be committed -- the repository is code-only (competition
+# rule: no match-derived data). Regenerate with: python make_submission.py
+*.csv
+
+# Local parse caches (kept next to the data, never committed)
+.cache/
+
+# Editor / OS
+.vscode/
+Thumbs.db
