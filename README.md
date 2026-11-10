@@ -1,5 +1,7 @@
 # mtah2027-possession
 
+[![CI](https://github.com/siddubakka/barca_hackathon-BMSIT-BOYS-/actions/workflows/ci.yml/badge.svg)](https://github.com/siddubakka/barca_hackathon-BMSIT-BOYS-/actions/workflows/ci.yml)
+
 Frame-level ball-possession decoding for **More than a Hack 2027 — Phase 1:
 Ball Possession** (Metrica Sports / FC Barcelona), tactical source `BAR-ATH`.
 Team: **BMSITBOYS**.
@@ -26,6 +28,9 @@ The submitted file is byte-reproducible from this repository
 `8CEE6FE3A39F2715F993DA595E66351BB476EDD8B302CB06A6DB262292188E99`.
 
 ## Reproduce the submission
+
+Requires **Python 3.12** (the version the submission and CI were tested on;
+newer versions should work — deps are pinned exactly):
 
 ```
 pip install -r requirements.txt

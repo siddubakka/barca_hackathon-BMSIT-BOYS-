@@ -432,10 +432,11 @@ log: `train/error_analysis_results.json`.
 
 ## 9. Reproduction
 
-From a fresh clone of this repository and the challenge's four-file data
-bundle (listed in the README under **Data**):
+From a fresh clone of this repository on Python 3.12 and the challenge's
+four-file data bundle (listed in the README under **Reproduce the
+submission**):
 
-```bat
+```
 pip install -r requirements.txt
 python make_submission.py --data-dir <data-dir> --out submission.csv
 ```
@@ -445,8 +446,9 @@ Verified three ways, all producing SHA256
 `8CEE6FE3A39F2715F993DA595E66351BB476EDD8B302CB06A6DB262292188E99`:
 
 1. **cold run** with the parse cache removed (rebuilt from the raw text,
-   59 s), and **warm run** (~12 s) on this machine;
-2. a copy of **exactly the files git tracks**, simulating a fresh clone —
+   59 s);
+2. **warm run** with the cache present (~12 s);
+3. a copy of **exactly the files git tracks**, simulating a fresh clone —
    unit tests run there (45 checks + graceful skip of the 2 lab checks that
    need the challenge's scorer) and the regenerated file matches byte for
    byte.
@@ -454,7 +456,8 @@ Verified three ways, all producing SHA256
 Dependencies are pinned (`requirements.txt`), the CSV contract (`frame,label`,
 199,319 rows, frames 0..N-1 in order) is validated before the file is
 written, and `python tests/test_core.py` gives 47 checks / 0 failures where
-the challenge repository is available. Independent format validation:
-`python <challenge-repo>/evaluation/validate_submission.py submission.csv`
-→ `Valid`. The submission uploaded to the form is this file under the team
-name — same bytes.
+the challenge repository is available. GitHub Actions runs byte-compile +
+tests on every push (green badge in the README). Independent format
+validation: `python <challenge-repo>/evaluation/validate_submission.py
+submission.csv` → `Valid`. The submission uploaded to the form is this file
+under the team name — same bytes.
