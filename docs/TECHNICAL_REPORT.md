@@ -1,8 +1,8 @@
 # Technical Report — mtah2027-possession
 
 Competition: **More than a Hack 2027 — Phase 1: Ball Possession**
-(Metrica Sports / FC Barcelona). Source: `BAR-ATH` tactical tracking.
-Ranking metric: `spell_f1_mean`, tie-break `macro_f1`.
+(Metrica Sports / FC Barcelona). Team: **BMSITBOYS**. Source: `BAR-ATH`
+tactical tracking. Ranking metric: `spell_f1_mean`, tie-break `macro_f1`.
 
 ---
 

@@ -2,21 +2,39 @@
 
 Frame-level ball-possession decoding for **More than a Hack 2027 — Phase 1:
 Ball Possession** (Metrica Sports / FC Barcelona), tactical source `BAR-ATH`.
+Team: **BMSITBOYS**.
 
 Given the per-frame tracking bundle (ATD raw text + metadata XML, homography,
 Smart Tagging XML), the pipeline emits one `H / A / D / X` label per video
 frame for all 199,319 frames of the match.
 
+Full method write-up: **[docs/TECHNICAL_REPORT.md](docs/TECHNICAL_REPORT.md)**
+(§7 = measurements, §8 = limitations and fixes, §9 = reproduction).
+
+## Results
+
+Public 5-minute pipeline check (used once, never for tuning):
+**spellF1 0.3545 — 2nd of 5 systems; macroF1 0.6627 — 1st**, both above
+`smooth50` (0.3256 / 0.6207 on the same window) — the baseline that wins
+the full match. The challenge's own caveat applies: with 17 ground-truth
+possessions in the window one miss moves spellF1 ≈ 0.06, so these gaps are
+indicative; the generalization evidence is the **+0.078** held-out gain
+over first-principles defaults on 14 unseen lab matches (report §7).
+
+The submitted file is byte-reproducible from this repository
+(`python make_submission.py` below), SHA256
+`8CEE6FE3A39F2715F993DA595E66351BB476EDD8B302CB06A6DB262292188E99`.
+
 ## Reproduce the submission
 
-```bat
+```
 pip install -r requirements.txt
-python make_submission.py --data-dir C:\path\to\data --out submission.csv
+python make_submission.py --data-dir /path/to/data --out submission.csv
 ```
 
 `--data-dir` (or the `MTAH_DATA_DIR` environment variable) must point at a
 directory containing the competition assets, either directly or under a
-`tactical/` subdirectory:
+`tactical/` subdirectory (Windows and POSIX paths both work):
 
 ```
 BAR-ATH_tactical_atd.xml
@@ -30,17 +48,18 @@ The run is deterministic: same data + config => byte-identical CSV
 automatically before the file is written (`frame,label`, 199,319 rows,
 frame 0..N-1 in order).
 
-Validate independently against the challenge's own checker:
+Validate independently against the challenge's own checker (the second
+command runs from inside the challenge clone):
 
-```bat
-python ..\more-than-a-hack-2027\evaluation\validate_submission.py submission.csv
-python evaluation\run_evaluation.py          # in the challenge repo
+```
+python ../more-than-a-hack-2027/evaluation/validate_submission.py submission.csv
+python evaluation/run_evaluation.py          # in the challenge repo
 ```
 
 Run the unit tests (no extra dependencies):
 
-```bat
-python tests\test_core.py
+```
+python tests/test_core.py
 ```
 
 ## How it works
@@ -83,8 +102,8 @@ compression stress (`train/window_stress.py`) confirms the window check is a
 fair preview: our 5-minute slices land within 0.03 of the full-match score
 where the official baselines lose 0.08–0.20 between the same two views.
 
-```bat
-python train\sweep.py --passes 2 --matches 6     # ~1 h, re-runs the selection
+```
+python train/sweep.py --passes 2 --matches 6     # ~1 h, re-runs the selection
                                                  # (writes train/sweep_results.json)
 ```
 
@@ -111,3 +130,7 @@ docs/TECHNICAL_REPORT.md   approach, assets used/dropped, training data,
 
 Match data is **not** committed to this repository (competition rule); the
 code regenerates the submission from the downloaded data bundle alone.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
