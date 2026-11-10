@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned dependencies
+        run: pip install -r requirements.txt
+      - name: Byte-compile
+        run: python -m compileall -q src train tests
+      - name: Unit tests (47 checks; the 2 lab-data checks skip without SKILLCORNER_DIR)
+        run: python tests/test_core.py
