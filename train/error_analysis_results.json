@@ -1,0 +1,78 @@
+{
+ "frozen": {
+  "tune": {
+   "n_matches": 6,
+   "spell_mean": 0.3683354740547719,
+   "recall03_micro": 0.5381903642773208,
+   "prec03_micro": 0.4663951120162933,
+   "recall05_mean": 0.4006571764792268,
+   "pieces_mean": 0.8465276151691982,
+   "split_gt_pct": 7.755581668625147,
+   "missed": 786,
+   "missed_dur_s_mean": 4.2920101781170485,
+   "matched_dur_s_mean": 18.958340611353712,
+   "missed_on_tag_pct": 37.913486005089055,
+   "spurious": 1048,
+   "spurious_dur_s_mean": 11.524885496183206,
+   "d_recall03_mean": 0.43724036988978193,
+   "n_d_gt": 612,
+   "n_d_pred": 661
+  },
+  "heldout": {
+   "n_matches": 14,
+   "spell_mean": 0.3486513533997596,
+   "recall03_micro": 0.517362740497419,
+   "prec03_micro": 0.46071876305892184,
+   "recall05_mean": 0.38027421985252635,
+   "pieces_mean": 0.8281123558472426,
+   "split_gt_pct": 7.273580478648522,
+   "missed": 2057,
+   "missed_dur_s_mean": 4.238288770053476,
+   "matched_dur_s_mean": 16.47938321995465,
+   "missed_on_tag_pct": 37.141468157510936,
+   "spurious": 2581,
+   "spurious_dur_s_mean": 11.888771793878341,
+   "d_recall03_mean": 0.4331537137747127,
+   "n_d_gt": 1499,
+   "n_d_pred": 1610
+  }
+ },
+ "defaults": {
+  "tune": {
+   "n_matches": 6,
+   "spell_mean": 0.2968543465031983,
+   "recall03_micro": 0.48413631022326675,
+   "prec03_micro": 0.3673651359786001,
+   "recall05_mean": 0.3480069334304697,
+   "pieces_mean": 0.8508040186365996,
+   "split_gt_pct": 11.222091656874266,
+   "missed": 878,
+   "missed_dur_s_mean": 4.633439635535307,
+   "matched_dur_s_mean": 20.232038834951453,
+   "missed_on_tag_pct": 34.510250569476085,
+   "spurious": 1419,
+   "spurious_dur_s_mean": 7.214658210007047,
+   "d_recall03_mean": 0.5102109832151132,
+   "n_d_gt": 612,
+   "n_d_pred": 1289
+  },
+  "heldout": {
+   "n_matches": 14,
+   "spell_mean": 0.2707351203211016,
+   "recall03_micro": 0.45706241201313935,
+   "prec03_micro": 0.34998203377650017,
+   "recall05_mean": 0.31816741936775156,
+   "pieces_mean": 0.8366595963615946,
+   "split_gt_pct": 10.886907555138432,
+   "missed": 2314,
+   "missed_dur_s_mean": 4.669732065687122,
+   "matched_dur_s_mean": 17.581848049281316,
+   "missed_on_tag_pct": 34.87467588591184,
+   "spurious": 3618,
+   "spurious_dur_s_mean": 6.88066334991708,
+   "d_recall03_mean": 0.5356121356980676,
+   "n_d_gt": 1499,
+   "n_d_pred": 3263
+  }
+ }
+}
