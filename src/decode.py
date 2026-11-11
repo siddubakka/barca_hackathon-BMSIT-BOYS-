@@ -136,6 +136,7 @@ def _decode_block(
     state: int | None = None
     age = 0
     run = 0  # consecutive fresh-evidence frames pointing away from `state`
+    since_restart = 10**9  # frames since the last dead -> alive edge
 
     for i in range(m):
         if dead[i]:
@@ -146,6 +147,7 @@ def _decode_block(
             # just back from a dead ball: dwell already elapsed, answer fast
             age = cfg.t_min_poss_frames
             run = 0
+            since_restart = 0
 
         e = e_team[i]
         if np.isfinite(e):
@@ -162,11 +164,21 @@ def _decode_block(
                     run += 1
                 else:
                     run = 0
-                if age >= cfg.t_min_poss_frames and run >= cfg.t_switch_frames:
+                # right after a restart, cap the run needed to take over (the
+                # held team usually conceded the stoppage); normal turnovers
+                # keep the full t_switch_frames requirement
+                need = (
+                    min(cfg.t_switch_frames, cfg.t_restart_flip_frames)
+                    if since_restart < cfg.t_min_poss_frames
+                    else cfg.t_switch_frames
+                )
+                if age >= cfg.t_min_poss_frames and run >= need:
                     state = 1 - state
                     age = 0
                     run = 0
+                    since_restart = 10**9  # takeover done
         # No fresh evidence: state and run hold (ball lost -> keep last team).
 
         out[a + i] = DEAD if state is None else state
         age += 1
+        since_restart += 1

@@ -194,6 +194,22 @@ ranking rule, applied to legal data.
 **Generalization check**: the frozen configuration is re-scored on the 14
 held-out matches (report in §7).
 
+**Second search (stages 2–3), recorded and rejected.** The search was
+re-opened twice under the same objective and the same data walls: stage-2
+(`train/sweep2.py`, 114 candidates) extended every stage-1 grid edge and
+introduced `t_restart_flip_frames`; stage-3 (`train/sweep3.py`) ran 32
+fixed frontier/edge/pairwise trials under a selection rule
+**pre-registered in the file before any trial ran** (band filter, then
+within 0.004 tune-spell of the maximum — ≈2× the largest paired standard
+error among near-top candidates on the 6 matches — take the highest
+macro), then sent exactly **one** candidate to a single held-out
+evaluation against a pre-registered adoption bar (mean ≥ 0.3587, ≥9/14
+per-match wins, macro ≥ 0.5686, dead-volume band respected). The
+candidate beat the frozen config on *both* tune metrics but scored
+0.3366 / 3-of-14 wins held-out — **failed the bar, was rejected, and no
+parameter changed**. Full account in §7; logs in
+`train/sweep2_results.json` / `train/sweep3_results.json`.
+
 ## 5. Possession rules as implemented (brief → code)
 
 | Brief / FAQ rule | Where |
@@ -226,14 +242,23 @@ what `make_submission.py` runs. Full trial log: `train/sweep_results.json`.
 | `r_max_m` | players beyond this distance do not vote | 20 / 30 / 45 | **30** (default kept) |
 | `max_hole_frames` | ball interpolation trust radius | 12 / 25 / 50 / 100 / 250 | **50** (default kept) |
 
+These are stage-1 selections. Stages 2–3 re-searched the same parameters
+on extended grids (`train/sweep2.py`, `train/sweep3.py`; logs in
+`sweep2_results.json` / `sweep3_results.json`) — **no candidate passed
+the pre-registered held-out gate (§7), so every value above stands.**
+
 Not tunable in the lab (kept at first-principles defaults): `w_tag = 0.30`
 (the lab has no phase tags to train it on; it only biases fresh tracking
-votes and never decides alone).
+votes and never decides alone). Stage-3 confirmed this empirically:
+`w_tag` = 0.15 / 0.5 / 0.7 give identical scores.
 
 ## 7. Validation
 
-Everything below ran with the frozen `src/config.py`; the public window was
-scored exactly once, after freezing, and no parameter changed afterwards.
+The submission runs the frozen `src/config.py` throughout. The public
+window was scored exactly once, after that freeze, and was never
+re-scored; no window number was used to choose or reject any configuration
+afterwards — stages 2–3 below were decided on lab data alone, and none was
+adopted, so the shipped bytes never changed.
 
 **Unit tests** — `python tests/test_core.py`: 47 checks, 0 failures
 (neighbour/interpolation correctness, dead-machine lull→kick transitions,
@@ -265,15 +290,55 @@ same choice):
 
 | config | spellF1 | macroF1 | alive/dead F1 | poss/min (GT 3.1) | D-runs/min (GT 1.1) | D share (GT 45 %) |
 |---|---|---|---|---|---|---|
-| first-principles defaults | 0.2707 | 0.6491 | 0.821 | 3.8 | 2.2 | 32 % |
-| **frozen** | **0.3487** | 0.5786 | 0.774 | **3.3** | **1.1** | 24 % |
+| first-principles defaults | 0.2707 | 0.6491 | 0.821 | 4.1 | 2.4 | 27 % |
+| **frozen** | **0.3487** | **0.5786** | 0.774 | **3.5** | **1.2** | **19 %** |
 
-+0.078 spellF1 out-of-sample, and structure moves from 2× over-splitting
-(2.2 D-runs/min against GT's 1.1) to an exact D-run rate match with 3.3
-possessions/min against GT's 3.1. The frozen config again gives up lab
+(Structure columns are computed on graded frames for prediction and GT
+alike — `train/validate_heldout.py`.)
+
++0.078 spellF1 out-of-sample, and structure moves from >2× over-splitting
+(2.4 D-runs/min against GT's 1.1, with 4.1 possessions/min against GT's
+3.1) to near-parity (1.2 and 3.5). The frozen config again gives up lab
 macro/alive-dead because it marks less `D` than the lab's inflated GT wants
 (§8.1) — and on the competition window the same config posts the **best
 alive/dead F1 (0.9125) and best D F1 (0.5069) on the board**.
+
+**Stages 2–3 — a second search, rejected by its own pre-registered gate.**
+After the freeze the search was re-opened on lab data only, under rules
+written down before the results existed:
+
+* **stage-2** (`train/sweep2.py`) — coordinate descent over 114 candidate
+  configurations on extended grids: every stage-1 edge pushed in the
+  direction it pointed, plus a new `t_restart_flip_frames` parameter
+  (faster team flip after dead→alive). Tune rose to 0.3805 (+0.0122 vs
+  frozen, 6/6 per-match wins) — but every faster restart-flip value
+  scored *worse* (0.349–0.375 at 6–22 frames against 0.381 at 30), so the
+  parameter stays at its behaviour-neutral default and the shipped decode
+  remains bit-identical to stage-1 (verified by hash).
+* **stage-3** (`train/sweep3.py`) — a fixed, non-adaptive list of 32
+  trials (untried grid edges, a denser dead-threshold frontier, 12
+  pairwise joint moves) under a selection rule **pre-registered in the
+  file before any trial ran**: dead-volume band filter → within 0.004
+  tune-spell of the maximum (≈2× the largest paired standard error among
+  near-top candidates on the 6 matches) → highest macroF1. A
+  determinism probe re-scored stage-2's best first and reproduced it
+  exactly.
+* **the gate** (pre-registered alongside the rule): the single selected
+  candidate — stage-2's accepted moves with `th_motion_low` 0.45 and
+  `th_motion_high` 2.1, tune **0.3779 spell / 0.6186 macro**, *above
+  frozen on both tune metrics* (+0.0096 / +0.0041), dead share 0.1987
+  inside the [frozen − 3.0pp, frozen + 1.5pp] band — was evaluated
+  **once** on the 14 held-out matches. Result: **0.3366 spell / 0.5871
+  macro / 3-of-14 wins against frozen** (bar: ≥ 0.3587 mean, ≥ 9/14
+  wins, macro ≥ 0.5686).
+
+**Verdict: rejected.** `src/config.py` was not changed and the
+deliverable remains the stage-1 configuration; no second candidate was
+evaluated — one shot per pre-registration, because iterating on the
+held-out set would destroy it. The binding limit was the 6-match tune
+set, not the selection rule: +0.010 of tune did not transfer (Δ −0.012
+held-out). Full logs: `train/sweep2_results.json`,
+`train/sweep3_results.json`.
 
 **Single public-window pipeline check** — the challenge's own
 `evaluation/run_evaluation.py` against
@@ -380,6 +445,17 @@ for recovered ones, and 37 % sit inside a restart window. Some of those
 through (§8.1), so treat recall as a lower bound on true recovery. Full
 log: `train/error_analysis_results.json`.
 
+**Frame-level attribution of the same errors** (`train/error_breakdown.py`,
+held-out): of the frames inside missed GT spells, 45.9 % carry our *wrong
+team* and 19.8 % are dead in our output; of the frames inside spurious
+predicted spells, 50.1 % are GT-dead and 34.4 % the wrong team. At the
+exact GT restart frame we are still dead 88.7 % of the time and agree on
+average 33.8 frames (1.4 s) later — only 25.1 % within 12 frames. The lag
+therefore lives in dead→alive *detection*, not in team attribution, which
+explains a counter-intuitive stage-2 result: speeding the post-restart
+team flip (`t_restart_flip_frames` 6–22) scored worse, not better, and was
+dropped. Log: `train/error_breakdown_results.json`.
+
 ## 8. Limitations
 
 1. **Lab GT approximates "not in play".** SkillCorner's possession model marks
@@ -404,7 +480,8 @@ log: `train/error_analysis_results.json`.
    handled only by holding the last team, not by recovering the ball from
    pixels.
 5. **`w_tag` is not tunable in the lab** (no phase tags exist there) and keeps
-   its first-principles default.
+   its first-principles default. Stage-3 confirmed it directly: 0.15 / 0.5 /
+   0.7 produce identical scores.
 6. The homography is validated but unused; a future iteration could use it for
    image-space ball recovery.
 

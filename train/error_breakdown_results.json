@@ -1,0 +1,82 @@
+{
+ "frozen": {
+  "tune": {
+   "n_matches": 6,
+   "spell_mean": 0.3683,
+   "missed_total": 786,
+   "miss_causes_pct": {
+    "dead": 22.9,
+    "mixed": 0.3,
+    "right_team": 32.8,
+    "wrong_team": 44.0
+   },
+   "miss_mean_fracs_d_right_wrong": [
+    0.2371,
+    0.3353,
+    0.4277
+   ],
+   "spurious_total": 1048,
+   "spurious_causes_pct": {
+    "gt_dead": 48.8,
+    "mixed": 0.8,
+    "right_team": 15.5,
+    "wrong_team": 35.0
+   },
+   "spurious_mean_fracs_gtdead_gtright_gtwrong": [
+    0.4696,
+    0.175,
+    0.3554
+   ],
+   "restarts": 606,
+   "restart_state_pct": {
+    "alive_correct": 8.1,
+    "alive_wrong_team": 3.3,
+    "still_dead": 88.6
+   },
+   "early_exit_pct": 11.2,
+   "restart_frames_to_agree_mean": 34.2,
+   "restart_agree_within_12f_pct": 23.4,
+   "pred_d_share": 0.1897,
+   "gt_d_share": 0.4229
+  },
+  "heldout": {
+   "n_matches": 14,
+   "spell_mean": 0.3487,
+   "missed_total": 2057,
+   "miss_causes_pct": {
+    "dead": 19.8,
+    "mixed": 0.8,
+    "right_team": 33.4,
+    "wrong_team": 45.9
+   },
+   "miss_mean_fracs_d_right_wrong": [
+    0.2156,
+    0.3396,
+    0.4448
+   ],
+   "spurious_total": 2581,
+   "spurious_causes_pct": {
+    "gt_dead": 50.1,
+    "mixed": 1.4,
+    "right_team": 14.1,
+    "wrong_team": 34.4
+   },
+   "spurious_mean_fracs_gtdead_gtright_gtwrong": [
+    0.486,
+    0.1684,
+    0.3456
+   ],
+   "restarts": 1482,
+   "restart_state_pct": {
+    "alive_correct": 8.0,
+    "alive_wrong_team": 3.3,
+    "still_dead": 88.7
+   },
+   "early_exit_pct": 10.9,
+   "restart_frames_to_agree_mean": 33.8,
+   "restart_agree_within_12f_pct": 25.1,
+   "pred_d_share": 0.1866,
+   "gt_d_share": 0.4522
+  }
+ }
+}

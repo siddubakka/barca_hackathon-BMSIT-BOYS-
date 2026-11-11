@@ -38,6 +38,13 @@ class Config:
     th_switch: float = 0.12            # sweep: 0.12 (grid .12/.18/.25/.35/.5)
     t_switch_frames: int = 30          # sweep kept the default (12/25/40/60)
     t_min_poss_frames: int = 75        # sweep kept the default (25/50/75/125/200)
+    # After a dead -> alive edge the held team often took the ball *out*, so
+    # the restart taker must be able to take over faster than a normal
+    # controlled turnover: during the first t_min_poss_frames frames after
+    # the edge the opposite-vote run needed to flip is capped at
+    # min(t_switch_frames, t_restart_flip_frames).  30 == t_switch_frames
+    # keeps the default behaviour identical to the stage-1 selection.
+    t_restart_flip_frames: int = 30
 
     # ---- dead / alive state machine --------------------------------------
     th_motion_low: float = 0.4         # sweep: 0.4 (grid .4/.6/.8/1.0/1.3)
